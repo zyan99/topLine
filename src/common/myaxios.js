@@ -10,7 +10,7 @@ axios.interceptors.request.use(function(config){
     let data = config.data || {};// get 请求时候没有 data 的防御性代码
     data["oauth_token"] = "bLrXDOxg8HgNvkYfPQRjMljSgubXYvSx";// 在登录的情况下是存在, 如没登陆就不存在
     config.data = data;
-    console.log(config)
+    // console.log(config);
     return config;
 },function(error){
     return Promise.reject(error);

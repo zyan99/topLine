@@ -10,6 +10,9 @@ import store from './store'  //   ./store/index.js
 import axios from "./common/myaxios"
 // a.2 在 Vue 的原型上添加 $axios
 Vue.prototype.$axios = axios;
+// 引入 element-ui 的组件库
+import { Message } from "element-ui"
+Vue.prototype.$message = Message;
 
 Vue.config.productionTip = false
 // 创建一个 vue 的实例

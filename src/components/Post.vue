@@ -36,7 +36,18 @@
         </div>
       </div>
       <!-- 写文章 -->
-      <div class="tab_article_content" v-show="activeTab=='article'">写文章</div>
+      <div class="tab_article_content" v-show="activeTab=='article'">
+        <input class="article_input" v-model="title" type="text" />
+        <vue-editor
+          id="editor"
+          use-custom-image-handler
+          class="rich-editor"
+          v-model="html_content"
+        />
+        <section class="article_public">
+          <span class="article_public_text" @click.stop="publishArticle">发布</span>
+        </section>
+      </div>
     </div>
     <!-- tab 内容 的结束 -->
   </div>
@@ -45,10 +56,13 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import { VueEditor } from "vue2-editor";
 
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: {},
+  components: {
+    VueEditor,
+  },
   data() {
     //这里存放数据
     return {
@@ -63,9 +77,11 @@ export default {
           text: "写文章",
         },
       ],
-      activeTab: "toutiao",
+      activeTab: "article",
       showUploadImgArea: false, // 图片上传是否显示
       uploadImgs: [], // 存放图片路径
+      html_content:"",// 文章 富文本编辑器内容
+      title:"",// 文章 标题内容
     };
   },
   //监听属性 类似于data概念
@@ -74,25 +90,59 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    // 发头条
-    publishTT:function(){
-      let content = this.tt_content;
-      if(!content){// 内容为空的情况下
-        // todo 换成 elementUI message
-        alert("输入点啥啊");
+    // 发布文章
+    publishArticle:function(){
+      if(!this.title || !this.html_content){
+        this.$message({
+          showClose: true,
+          message: "输入不能为空",
+          type: "warning",
+        })
         return false;
       }
-      this.$axios.post("/createTT",{
-        content:content,
-        imgs: this.uploadImgs.join(','),
+      this.$axios.post("/createArticle",{
+        content: this.html_content,// 富文本内容
+        img:"",
+        title:this.title,// 标题内容
       }).then(res=>{
+        this.$message({
+          showClose: true,
+          message: '发布成功',
+          type: 'success'
+        })
         console.log(res);
-      }).catch(err=>{
-        console.log(err);
+        this.html_content = "";
+        this.title = "";
       })
+    },
+    // 发头条
+    publishTT: function () {
+      let content = this.tt_content;
+      if (!content) {
+        // 内容为空的情况下
+        // todo 换成 elementUI message
+        // alert("输入点啥啊");
+        this.$message({
+          showClose: true,
+          message: "输入不能为空",
+          type: "warning",
+        });
+        return false;
+      }
+      this.$axios
+        .post("/createTT", {
+          content: content,
+          imgs: this.uploadImgs.join(","),
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       // 清空输入框
       this.tt_content = "";
-      // 
+      // 清除已选图片
       this.uploadImgs = [];
     },
     // 删除图片
@@ -262,6 +312,33 @@ export default {
     }
 
     .tab_article_content {
+      margin-top: 10px;
+      .article_input {
+        width: 100%;
+        height: 30px;
+      }
+
+      .rich-editor {
+        width: 100%;
+      }
+      .article_public {
+        display: flex;
+        justify-content: flex-end;
+        .article_public_text {
+          transition: all 0.3s;
+          display: inline-block;
+          width: 120px;
+          height: 40px;
+          line-height: 40px;
+          color: #fff;
+          background-color: #f48c8c;
+          text-align: center;
+          cursor: pointer;
+          &:hover {
+            background-color: #ea4245;
+          }
+        }
+      }
     }
   }
 }

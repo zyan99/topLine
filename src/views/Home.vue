@@ -69,7 +69,7 @@ async mounted() {
       number:20
     },
   })
-  console.log(res)
+  // console.log(res)
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
