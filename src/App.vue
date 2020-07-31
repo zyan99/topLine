@@ -20,7 +20,9 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+textarea,
+input {
   padding: 0;
   margin: 0;
   box-sizing: border-box;

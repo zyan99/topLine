@@ -11,7 +11,9 @@
       <div class="tt_home_content_left">
         <Navigator></Navigator>
       </div>
-      <div class="tt_home_content_middle">中</div>
+      <div class="tt_home_content_middle">
+        <Post></Post>
+      </div>
       <div class="tt_home_content_right">右</div>
     </div>
     <!-- 主页内容的结束 -->
@@ -22,16 +24,17 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import Navigator from "../components/Navigator"
+import Post from "../components/Post"
 
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {
   Navigator,
+  Post,
 },
 data() {
 //这里存放数据
 return {
-
 };
 },
 //监听属性 类似于data概念
@@ -47,8 +50,26 @@ created() {
 
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
-mounted() {
-
+async mounted() {
+  // this.$axios.get("http://tt.linweiqin.com/api/tt/getArticles",{
+  //   params:{
+  //     lastid:0,
+  //     type:"TT",
+  //     page:1,
+  //     number:20
+  //   }
+  // }).then(res=>{
+  //   console.log(res)
+  // }).catch(err=>console.log(err))
+  let res = await this.$axios.get("/getArticles",{
+    params:{
+      lastid:0,
+      type:"TT",
+      page:1,
+      number:20
+    },
+  })
+  console.log(res)
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
