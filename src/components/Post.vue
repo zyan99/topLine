@@ -40,7 +40,8 @@
         <input class="article_input" v-model="title" type="text" />
         <vue-editor
           id="editor"
-          use-custom-image-handler
+          useCustomImageHandler
+          @image-added="handleImageAdded"
           class="rich-editor"
           v-model="html_content"
         />
@@ -77,7 +78,7 @@ export default {
           text: "写文章",
         },
       ],
-      activeTab: "article",
+      activeTab: "toutiao",
       showUploadImgArea: false, // 图片上传是否显示
       uploadImgs: [], // 存放图片路径
       html_content:"",// 文章 富文本编辑器内容
@@ -90,6 +91,18 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    // 富文本上传图片
+    handleImageAdded:function(file, Editor, cursorLocation, resetUploader){
+      console.log("vue2-deitor 上传图片")
+      let formData = new FormData();
+      // console.log(file)
+      formData.append("file", file);
+      this.$axios.post("/aliossUpload", formData).then(res=>{
+        let url = res.url;
+        Editor.insertEmbed(cursorLocation, "image", url);
+        resetUploader();
+      })
+    },
     // 发布文章
     publishArticle:function(){
       if(!this.title || !this.html_content){
